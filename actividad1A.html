@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imágenes Aleatorias de Unsplash</title>
+    <style>
+        /* Estilos para el cuerpo de la página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0; /* Color de fondo suave */
+            color: #333; /* Color del texto principal */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Altura mínima del contenedor */
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Estilo del título */
+        h1 {
+            color: #555; /* Color del texto del título */
+            text-align: center;
+            margin-bottom: 20px; /* Espacio debajo del título */
+        }
+
+        /* Estilo del botón para cargar las imágenes */
+        #loadImageBtn {
+            background-color: #007BFF; /* Color de fondo azul */
+            color: #fff; /* Color del texto en blanco */
+            border: none; /* Sin borde */
+            padding: 10px 20px; /* Espaciado interno del botón */
+            border-radius: 5px; /* Bordes redondeados */
+            cursor: pointer; /* Cambia el cursor a una mano al pasar por el botón */
+            font-size: 16px; /* Tamaño de letra del botón */
+            transition: background-color 0.3s ease; /* Transición suave del color al hacer hover */
+        }
+
+        /* Estilo del botón al pasar el mouse */
+        #loadImageBtn:hover {
+            background-color: #0056b3; /* Color más oscuro cuando se hace hover */
+        }
+
+        /* Estilo del contenedor de la galería */
+        #imageContainer {
+            display: flex; /* Flexbox para colocar las imágenes horizontalmente */
+            gap: 10px; /* Espacio entre las imágenes */
+            flex-wrap: wrap; /* Permite que las imágenes pasen a la siguiente línea si no caben */
+            margin-top: 20px; /* Espacio superior para separar del botón */
+            max-width: 100%;
+            justify-content: center;
+        }
+
+        /* Estilo de cada imagen dentro de la galería */
+        .image-item {
+            width: 300px; /* Ancho fijo para cada imagen */
+            height: 200px; /* Altura fija para cada imagen */
+            overflow: hidden; /* Ocultar el desbordamiento de la imagen */
+            border-radius: 10px; /* Bordes redondeados para cada imagen */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+        }
+
+        .image-item img {
+            width: 100%; /* Ajustar la imagen al ancho del contenedor */
+            height: 100%; /* Ajustar la imagen a la altura del contenedor */
+            object-fit: cover; /* Cubrir el contenedor sin deformar la imagen */
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Imágenes Aleatorias de Unsplash</h1>
+    <!-- Botón que permite obtener nuevas imágenes aleatorias -->
+    <button id="loadImageBtn">Obtener Imágenes Aleatorias</button>
+
+    <!-- Contenedor para la galería de imágenes -->
+    <div id="imageContainer"></div>
+
+    <script>
+        // Clave de la API de Unsplash (reemplazar con tu propia API Key)
+        const apiKey = '7_ySs83v3v8RSxJsL-6lgFUPYmjJ1kSPPYjnVGGIaiQ';
+
+        // Selecciona el botón y el contenedor de la galería por su ID
+        const loadImageBtn = document.getElementById('loadImageBtn');
+        const imageContainer = document.getElementById('imageContainer');
+
+        // Número de imágenes a cargar cada vez que se presiona el botón
+        const numberOfImages = 5;
+
+        // Agrega un evento al botón para que al hacer clic se obtengan nuevas imágenes
+        loadImageBtn.addEventListener('click', () => {
+            // Limpia el contenedor de imágenes antes de agregar nuevas
+            imageContainer.innerHTML = '';
+
+            // Realiza múltiples solicitudes a la API de Unsplash para obtener varias imágenes
+            for (let i = 0; i < numberOfImages; i++) {
+                fetch(`https://api.unsplash.com/photos/random?client_id=${apiKey}`)
+                    .then(response => response.json()) // Convierte la respuesta a formato JSON
+                    .then(data => {
+                        // Crea un nuevo elemento div para cada imagen
+                        const imageItem = document.createElement('div');
+                        imageItem.classList.add('image-item');
+
+                        // Crea un elemento de imagen y establece la URL y el texto alternativo
+                        const img = document.createElement('img');
+                        img.src = data.urls.regular; // 'regular' ofrece una calidad media de la imagen
+                        img.alt = data.alt_description || 'Imagen de Unsplash';
+
+                        // Añade la imagen al contenedor de la galería
+                        imageItem.appendChild(img);
+                        imageContainer.appendChild(imageItem);
+                    })
+                    .catch(error => {
+                        // Muestra en la consola cualquier error que ocurra durante la solicitud
+                        console.error('Error al obtener la imagen:', error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
